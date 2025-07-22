@@ -11,4 +11,3 @@ class Project{
 function editProjectName(project, newName){
     project.projectTitle = newName;
 };
-
