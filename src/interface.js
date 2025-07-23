@@ -1,7 +1,7 @@
 export { allProjects, createNewTask, removeTask, createNewProject, removeProject, moveTask }
 
-import { Project } from "src/projects.js";
-import { Task } from "src/tasks.js";
+import { Project } from "./projects.js";
+import { Task } from "./tasks.js";
 import { compareAsc } from "date-fns";
 
 const defaultTaskList = new Project("Tasklist");

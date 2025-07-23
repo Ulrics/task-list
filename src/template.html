@@ -7,28 +7,53 @@
 </head>
 <body>
     <div class="main-container">
-        
+        <div class="primarybtn-container">
+            <button class="create-btn" id="createNewTaskBtn"><img class="med-icon" src="./assets/plus.svg" alt="plus icon">New Task</button>
+            <button class="create-btn" id="createNewProjectBtn"><img class="med-icon" src="./assets/circle-plus.svg" alt="plus icon">New Project</button>
+        </div>
     </div>
     <dialog id="editTask">
         <form>
 
         </form>
     </dialog>
-    <dialog id="newTask">
-        <form>
+    <dialog id="taskModal">
+        <form action="" method="" id="taskForm">
             <div class="modal-container">
-                <div class="modalheader-container">
+                <div class="modal-header-container">
                     <h4>Create New Task</h4>
-                    <img>
+                    <img class="lg-icon close-icon" src="./assets/x-close.svg" alt="close x icon" data-action="closeModal">
                 </div>
-                <div class="task-info-container">
-                    <input class="task-title-input" type="text" name="task-title" 
-                    placeholder="Task" required>
-                    <textarea class="task-d" name="task-descrip"
+                <div class="task-top-container">
+                    <input class="task-title-input" type="text" name="taskTitle" placeholder="Task" data-value="taskTitle" required autofocus>
+                    <textarea class="task-d" name="taskDescrip" placeholder="Notes" data-value="taskDescription"></textarea>
+                </div>
+                <div class="task-bottom-container">
+                    <input class="date-picker" type="date" name="taskDueDate" data-value="taskDueDate">
+                    <div class="input-row-container">
+                        <div class="icon-label-container">
+                            <img class="med-icon" src="./assets/arrow-up.svg" alt="arrow up icon">
+                            <label for="taskPriority">Priority</label>
+                        </div>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="input-row-container width-100">
+                        <div class="icon-label-container">
+                            <img class="med-icon" src="./assets/folder.svg" alt="folder icon">
+                            <label for="projectSelect">Project</label>
+                        </div>
+                        <select class="project-select width-100" id="projectSelect">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer-container right-align">
+                    <button class="primary-btn" type="submit" data-action="submitBtn">Create Task</button>
                 </div>
             </div>
-
-
         </form>
     </dialog>
 </body>
