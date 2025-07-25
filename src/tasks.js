@@ -24,4 +24,10 @@ class Task{
         }
         return null;
     }
+    getDateValue(){
+        if(this.dueDate != null){
+            return format(this.dueDate, "yyyy-MM-dd");
+        }
+        return null;
+    }
 };

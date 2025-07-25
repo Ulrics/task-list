@@ -12,20 +12,15 @@
             <button class="create-btn" id="createNewProjectBtn"><img class="med-icon" src="./assets/circle-plus.svg" alt="plus icon">New Project</button>
         </div>
     </div>
-    <dialog id="editTask">
-        <form>
-
-        </form>
-    </dialog>
     <dialog id="taskModal">
         <form action="" method="" id="taskForm">
             <div class="modal-container">
                 <div class="modal-header-container">
-                    <h4>Create New Task</h4>
+                    <h4 data-element="taskHeader">Create New Task</h4>
                     <img class="lg-icon close-icon" src="./assets/x-close.svg" alt="close x icon" data-action="closeModal">
                 </div>
                 <div class="task-top-container">
-                    <input class="task-title-input" type="text" name="taskTitle" placeholder="Task" data-value="taskTitle" required autofocus>
+                    <input class="title-input" type="text" name="taskTitle" placeholder="Task" data-value="taskTitle" required autofocus>
                     <textarea class="task-d" name="taskDescrip" placeholder="Notes" data-value="taskDescription"></textarea>
                 </div>
                 <div class="task-bottom-container">
@@ -52,6 +47,22 @@
                 </div>
                 <div class="modal-footer-container right-align">
                     <button class="primary-btn" type="submit" data-action="submitBtn">Create Task</button>
+                </div>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="projectModal">
+        <form action="" method="" id="projectForm">
+            <div class="modal-container">
+                <div class="modal-header-container">
+                    <h4>Create New Project</h4>
+                    <img class="lg-icon close-icon" src="./assets/x-close.svg" alt="close x icon" data-action="closeModal">
+                </div>
+                <div class="task-top-container">
+                    <input class="title-input" type="text" name="projectTitle" placeholder="Project name" data-value="projectTitle" required autofocus>
+                </div>
+                <div class="modal-footer-container right-align">
+                    <button class="primary-btn" type="submit" data-action="submitBtn">Create Project</button>
                 </div>
             </div>
         </form>

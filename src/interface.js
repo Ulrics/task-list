@@ -1,4 +1,4 @@
-export { allProjects, createNewTask, removeTask, createNewProject, removeProject, moveTask }
+export { allProjects, createNewTask, removeTask, createNewProject, removeProject, moveTask, editTask, findProjectIndex }
 
 import { Project } from "./projects.js";
 import { Task } from "./tasks.js";
@@ -44,10 +44,17 @@ function createNewTask(taskTitle, description, dueDate, priority, projectID){
 }
 
 function moveTask(task, newProjectID){
-    removeTask(task);
+    const oldProjectIndex = findProjectIndex(task.projectID);
     const newProjectIndex = findProjectIndex(newProjectID);
-    allProjects[newProjectIndex].push(task);
-    sortTasksByDate(allProjects[newProjectIndex]);
+
+    const oldProject = allProjects[oldProjectIndex];
+    const newProject = allProjects[newProjectIndex];
+
+    oldProject.projectTasks = oldProject.projectTasks.filter(t => t.id !== task.id);
+
+    newProject.projectTasks.push(task);
+    task.projectID = newProjectID;
+    sortTasksByDate(newProject);
 }
 
 function createNewProject(projectTitle){
@@ -68,3 +75,9 @@ function findProjectIndex(projectID){
     );
 }
 
+function editTask(task, taskTitle, description, dueDate, priority){
+    task.taskTitle = taskTitle;
+    task.descript = description;
+    task.dueDate = dueDate;
+    task.priority = priority;
+}
