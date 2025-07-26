@@ -1,4 +1,4 @@
-export { allProjects, createNewTask, removeTask, createNewProject, removeProject, moveTask, editTask, findProjectIndex }
+export { allProjects, createNewTask, removeTask, createNewProject, removeProject, moveTask, editTask, findProjectIndex, sortTasksByDate }
 
 import { Project } from "./projects.js";
 import { Task } from "./tasks.js";
@@ -60,6 +60,7 @@ function moveTask(task, newProjectID){
 function createNewProject(projectTitle){
     const newProject = new Project(projectTitle);
     allProjects.push(newProject);
+    return newProject;
 }
 
 function removeProject(projectObject){

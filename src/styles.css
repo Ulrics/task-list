@@ -214,6 +214,37 @@ button{
     background-color: var(--dark-purple);
 }
 
+.delete-btn{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+.delete-btn:hover{
+    background-color: var(--dark);
+    cursor: pointer;
+}
+
+.edit-btn{
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border-radius: 4px;
+    padding: 0px;
+}
+
+.edit-btn:hover{
+    background-color: var(--light-grey);
+    cursor: pointer;
+}
+
 .med-icon{
     width: 16px;
     height: 16px;
@@ -243,6 +274,12 @@ button{
     max-width: 800px;
 }
 
+.project-header-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .title-divider-container{
     padding: 0px 8px 0px 8px; 
     display: flex;
@@ -253,7 +290,7 @@ button{
 .single-task-container{
     display: flex;
     gap: 8px;
-    padding: 4px 8px 4px 4px;
+    padding: 4px 12px 4px 4px;
     border-radius: 8px;
 }
 
@@ -312,4 +349,9 @@ button{
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
 }

@@ -1,28 +1,30 @@
 import './styles.css';
-import { allProjects, createNewTask, removeTask, createNewProject, removeProject, moveTask, editTask, findProjectIndex } from './interface.js';
-import { renderUI, rerenderTasks, buildProjectBlock } from "./renderer.js";
+import { allProjects, createNewTask, removeTask, createNewProject, removeProject, moveTask, editTask, findProjectIndex, sortTasksByDate } from './interface.js';
+import { renderUI, rerenderTasks, buildProjectBlock, mainContainer } from "./renderer.js";
+import trashIcon from "./assets/trash.svg";
 
-export { startEditTaskModal };
+export { startEditTaskModal, startEditProjectModal };
 
 const newTaskBtn = document.getElementById("createNewTaskBtn");
 const taskModal = document.getElementById("taskModal");
 const taskForm = document.getElementById("taskForm");
-const closeTaskModal = taskModal.querySelector("[data-action = closeModal]");
+const closeTaskModalBtn = taskModal.querySelector("[data-action = closeModal]");
 const taskModalSubmitBtn = taskModal.querySelector("[data-action = submitBtn]");
+const taskModalFtrContainer = taskModal.querySelector("[data-element = footer]");
 
 const newProjectBtn = document.getElementById("createNewProjectBtn");
 const projectModal = document.getElementById("projectModal");
 const projectForm = document.getElementById("projectForm")
-const closeProjectModal = projectModal.querySelector("[data-action = closeModal]");
-const taskProjectSubmitBtn = projectModal.querySelector("[data-action = submitBtn]");
+const closeProjectModalBtn = projectModal.querySelector("[data-action = closeModal]");
+const projectSubmitBtn = projectModal.querySelector("[data-action = submitBtn]");
 
 newTaskBtn.addEventListener("click", startNewTaskModal);
-closeTaskModal.addEventListener("click", () => closeModal(taskForm, taskModal));
+closeTaskModalBtn.addEventListener("click", () => closeTaskModal(taskForm, taskModal));
 taskModalSubmitBtn.addEventListener("click", submitTask);
 
 newProjectBtn.addEventListener("click", () => projectModal.showModal());
-closeProjectModal.addEventListener("click", () => closeModal(projectForm, projectModal));
-taskProjectSubmitBtn.addEventListener("click", submitNewProject);
+closeProjectModalBtn.addEventListener("click", () => closeProjectModal(projectForm, projectModal));
+projectSubmitBtn.addEventListener("click", submitProject);
 
 const taskHeader = taskModal.querySelector("[data-element = taskHeader]");
 const taskTitleInput = taskModal.querySelector("[data-value = taskTitle]");
@@ -31,11 +33,9 @@ const taskDateInput = taskModal.querySelector("[data-value = taskDueDate]");
 const taskPrioritySelect = document.getElementById("taskPriority");
 const taskProjectSelect = document.getElementById("projectSelect");
 
-function closeModal(form, modal){
-    clearProjectOptions();
-    form.reset();
-    modal.close();
-}
+const projectModalHeader = projectModal.querySelector("[data-element = projectHeader]");
+const projectNameInput = projectModal.querySelector("[data-value = projectTitle]");
+const projectModalFtrContainer = projectModal.querySelector("[data-element = footer]");
 
 function startNewTaskModal(){
     populateProjectOptions();
@@ -57,6 +57,7 @@ function clearProjectOptions(){
     projectSelect.innerHTML = "";
 }
 
+let currentProjectEdit = null;
 let currentTaskEdit = null;
 let currentProjectID = null;
 
@@ -69,24 +70,35 @@ function submitTask(event){
     const priority = taskPrioritySelect.value;
     const projectID = taskProjectSelect.value;
 
-    console.log("Original:", currentProjectID);
-    console.log("Selected:", taskProjectSelect.value);
-
     if (currentTaskEdit === null){
+        console.log(dueDate);
         createNewTask(taskTitle, description, dueDate, priority, projectID);
-        rerenderTasks(projectID, findProjectContainer(projectID));
+        sortTasksByDate(allProjects[findProjectIndex(projectID)]);
+        rerenderTasks(projectID, findProjectTasksContainer(projectID));
     }
     else{
         editTask(currentTaskEdit, taskTitle, description, dueDate, priority);
         if(currentProjectID != projectID){
             moveTask(currentTaskEdit, projectID);
-            rerenderTasks(currentProjectID, findProjectContainer(currentProjectID));
-            rerenderTasks(projectID, findProjectContainer(projectID));
+            sortTasksByDate(currentProjectEdit);
+            rerenderTasks(currentProjectID, findProjectTasksContainer(currentProjectID));
+            sortTasksByDate(allProjects[findProjectIndex(projectID)]);
+            rerenderTasks(projectID, findProjectTasksContainer(projectID));
         }
         else{
-            rerenderTasks(projectID, findProjectContainer(projectID));
+            sortTasksByDate(allProjects[findProjectIndex(projectID)]);
+            rerenderTasks(projectID, findProjectTasksContainer(projectID));
         }
     }
+    closeTaskModal(taskForm, taskModal);
+}
+
+function deleteTask(event){
+    event.preventDefault();
+
+    removeTask(currentTaskEdit);
+    rerenderTasks(currentProjectID, findProjectTasksContainer(currentProjectID));
+
     resetTaskModal();
     closeModal(taskForm, taskModal);
 }
@@ -104,36 +116,131 @@ function startEditTaskModal(task){
     taskHeader.textContent = "Edit Task";
     taskModalSubmitBtn.textContent = "Save Edit";
     taskProjectSelect.value = task.projectID;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.addEventListener("click", deleteTask);
+
+    const deleteIcon = document.createElement("img");
+    deleteIcon.classList.add("lg-icon");
+    deleteIcon.src = trashIcon;
+
+    taskModalFtrContainer.classList.remove("right-align");
+    taskModalFtrContainer.classList.add("space-between");
+
+    taskModalFtrContainer.insertBefore(deleteBtn, taskModalSubmitBtn);
+    deleteBtn.appendChild(deleteIcon);
 }
 
 
-function submitNewProject(event){
+function submitProject(event){
     event.preventDefault();
 
     const projectTitle = projectModal.querySelector("[data-value = projectTitle").value;
-    createNewProject(projectTitle);
-    const newProjectIndex = allProjects.length - 1;
-    console.log(allProjects[newProjectIndex].projectTitle);
-    buildProjectBlock(newProjectIndex);
 
+    if (currentProjectEdit === null){
+        const newProject = createNewProject(projectTitle);
+        console.log(newProject);
+        const newProjectIndex = findProjectIndex(newProject.id);
+        buildProjectBlock(newProjectIndex);
+    }
+    else {
+        currentProjectEdit.projectTitle = projectTitle;
+        const projectHeader = document.querySelector(`[data-projectid="${currentProjectEdit.id}"][data-element="projectHeader"]`);
+        projectHeader.textContent = projectTitle;
+    }
+
+    closeProjectModal(projectForm, projectModal);
+}
+
+function startEditProjectModal(project){
+    projectModalHeader.textContent = "Edit Project";
+    projectSubmitBtn.textContent = "Save Edit";
+
+    projectNameInput.value = project.projectTitle;
+    currentProjectEdit = project;
+
+    projectModal.showModal()
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.addEventListener("click", deleteProject);
+
+    const deleteIcon = document.createElement("img");
+    deleteIcon.classList.add("lg-icon");
+    deleteIcon.src = trashIcon;
+
+    projectModalFtrContainer.classList.remove("right-align");
+    projectModalFtrContainer.classList.add("space-between");
+
+    projectModalFtrContainer.insertBefore(deleteBtn, projectSubmitBtn);
+    deleteBtn.appendChild(deleteIcon);
+}
+
+function deleteProject(event){
+    event.preventDefault();
+
+    removeProject(currentProjectEdit);
+    mainContainer.removeChild(document.querySelector(`[data-projectid="${currentProjectEdit.id}"][data-element="projectContainer"]`))
+
+    resetProjectModal();
     closeModal(projectForm, projectModal);
+}
+
+
+function closeModal(form, modal){
+    clearProjectOptions();
+    form.reset();
+    modal.close();
 }
 
 function resetTaskModal(){
     taskHeader.textContent = "Create New Task";
     taskModalSubmitBtn.textContent = "Create Task";
+
+    taskModalFtrContainer.classList.remove("right-align", "space-between");
+    taskModalFtrContainer.classList.add("right-align");
+
+    const deleteBtn = taskModalFtrContainer.querySelector(".delete-btn");
+    if (deleteBtn) {
+        taskModalFtrContainer.removeChild(deleteBtn);
+    }
+
     currentTaskEdit = null;
     currentProjectID = null;
 }
 
-function findProjectContainer(projectID){
-    const taskContainer = document.querySelector(`[data-projectid="${projectID}"]`);
+function resetProjectModal(){
+    projectModalHeader.textContent = "Create New Project";
+    projectSubmitBtn.textContent = "Create Project";
+
+    projectModalFtrContainer.classList.remove("right-align", "space-between");
+    projectModalFtrContainer.classList.add("right-align");
+
+    const deleteBtn = projectModalFtrContainer.querySelector(".delete-btn");
+    if (deleteBtn) {
+        projectModalFtrContainer.removeChild(deleteBtn);
+    }
+    currentProjectEdit = null;
+}
+
+function closeTaskModal(form, modal){
+    closeModal(form, modal);
+    resetTaskModal();
+}
+
+function closeProjectModal(form, modal){
+    closeModal(form, modal);
+    resetProjectModal();
+}
+
+function findProjectTasksContainer(projectID){
+    const taskContainer = document.querySelector(`[data-projectid="${projectID}"][data-element="taskContainer"]`);
     return taskContainer;
 }
 
 
 
-createNewProject("test project");
-createNewTask("01 test task", " 01 description", "2025-09-23", "low", allProjects[1].id);
-createNewTask("02 test task", "02 default description", "2025-10-23", "high", "default");
+createNewProject("Example Project");
+createNewTask("This is a example task - click me to view or edit task", "In here you can edit or view contents. To delete this task click the trash icon in the bottom-left of this modal. To edit or delete projects, click the icon to the left of the project name.", "2025-01-01", "low", allProjects[1].id);
+createNewTask("This is where your tasks go by default", "Tasklist is your default project if you don't choose a custom project.", "2025-01-01", "low", "default");
 renderUI();

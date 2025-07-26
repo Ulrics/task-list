@@ -8,8 +8,11 @@ class Task{
         this.priority = priority;
         this.projectID = projectID;
 
-        if(dueDate != null){
+        if(dueDate != ""){
             this.dueDate = parse(dueDate, "yyyy-MM-dd", new Date());
+        }
+        else{
+            this.dueDate = null;
         }
         
         this.isCompleted = false;
@@ -19,15 +22,15 @@ class Task{
         this.isCompleted = true;
     }
     getFormattedDate(){
-        if(this.dueDate != null){
+        if(this.dueDate != "" && this.dueDate != null){
             return format(this.dueDate, "MMM dd, yy");
         }
-        return null;
+        return "No Due Date";
     }
     getDateValue(){
-        if(this.dueDate != null){
-            return format(this.dueDate, "yyyy-MM-dd");
+        if(!this.dueDate){
+            return "";
         }
-        return null;
+        return format(this.dueDate, "yyyy-MM-dd");
     }
 };

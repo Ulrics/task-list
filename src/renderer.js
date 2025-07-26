@@ -1,7 +1,8 @@
-export { renderUI, rerenderTasks, buildProjectBlock }
+export { renderUI, rerenderTasks, buildProjectBlock, mainContainer }
 
 import { allProjects, findProjectIndex } from "./interface.js"
-import { startEditTaskModal } from "./index.js";
+import { startEditTaskModal, startEditProjectModal } from "./index.js";
+import editIconSvg from "./assets/square-pen.svg";
 
 
 const mainContainer = document.querySelector(".main-container");
@@ -10,18 +11,38 @@ function renderUI(){
   for(let i = 0; i < allProjects.length; i++){
     buildProjectBlock(i)
   }
+  const taskListEdit = document.getElementById("delete-me");
+  taskListEdit.remove();
 };
 
 function buildProjectBlock(projectIndex){
   const projectContainer = document.createElement("section");
+  projectContainer.dataset.projectid = allProjects[projectIndex].id;
+  projectContainer.dataset.element = "projectContainer";
   projectContainer.classList.add("project-container");
 
   const titleDividerContainer = document.createElement("div")
   titleDividerContainer.classList.add("title-divider-container")
 
   const projectHeader = document.createElement("h3")
+  projectHeader.dataset.projectid = allProjects[projectIndex].id;
+  projectHeader.dataset.element = "projectHeader";
   projectHeader.textContent = allProjects[projectIndex].projectTitle;
   projectHeader.classList.add("project-title");
+
+  const editBtn = document.createElement("button");
+  editBtn.classList.add("edit-btn");
+  if (projectIndex === 0){
+    editBtn.setAttribute("id", "delete-me")
+  }
+  editBtn.addEventListener("click", () => startEditProjectModal(allProjects[projectIndex]));
+  
+  const editIcon = document.createElement("img");
+  editIcon.src = editIconSvg;
+  editIcon.classList.add("med-icon");
+
+  const headerContainer = document.createElement("div");
+  headerContainer.classList.add("project-header-container");
 
   const divider = document.createElement("div");
   divider.classList.add("divider");
@@ -29,10 +50,14 @@ function buildProjectBlock(projectIndex){
   const tasksContainer = document.createElement("div");
   tasksContainer.classList.add("tasks-container");
   tasksContainer.dataset.projectid = allProjects[projectIndex].id;
+  tasksContainer.dataset.element = "taskContainer";
   
   mainContainer.appendChild(projectContainer);
-  projectContainer.appendChild(titleDividerContainer)
-  titleDividerContainer.appendChild(projectHeader);
+  projectContainer.appendChild(titleDividerContainer);
+  titleDividerContainer.appendChild(headerContainer);
+  headerContainer.appendChild(projectHeader);
+  headerContainer.appendChild(editBtn);
+  editBtn.appendChild(editIcon);
   titleDividerContainer.appendChild(divider);
   projectContainer.appendChild(tasksContainer);
 
@@ -53,6 +78,7 @@ function buildTask(task, projectContainer){
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.name = "taskCompletion";
+  checkbox.checked = task.isCompleted;
 
   const taskInfoContainer = document.createElement("div");
   taskInfoContainer.classList.add("task-info");
@@ -65,6 +91,24 @@ function buildTask(task, projectContainer){
   const taskDate = document.createElement("p");
   taskDate.classList.add("task-date");
   taskDate.textContent = task.getFormattedDate();
+
+  if (task.isCompleted) {
+      taskLabel.classList.add("completed");
+      taskDate.classList.add("completed");
+  }
+  checkbox.addEventListener("click", (event) => {
+      event.stopPropagation();
+      task.isCompleted = checkbox.checked;
+
+      if (task.isCompleted) {
+          taskLabel.classList.add("completed");
+          taskDate.classList.add("completed");
+      } else {
+          taskLabel.classList.remove("completed");
+          taskDate.classList.remove("completed");
+      }
+      rerenderTasks(task.projectID, projectContainer)
+  });
 
   const priorityCircle = document.createElement("div");
   priorityCircle.classList.add(getPriorityClass(task.priority));
@@ -93,6 +137,7 @@ function rerenderTasks(projectID, tasksContainer){
   tasksContainer.innerHTML = "";
   let project = allProjects[projectIndex];
   let numOfTasks = project.projectTasks.length;
+
 
   for(let a = 0; a < numOfTasks; a++){
     let currentTask = project.projectTasks[a]
