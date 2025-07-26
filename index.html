@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasklist</title>
+<script defer src="tasklist.js"></script></head>
+<body>
+    <div class="main-container">
+        <div class="primarybtn-container">
+            <button class="create-btn" id="createNewTaskBtn"><img class="med-icon" src="2eb65b1fc8e1bca126e9.svg" alt="plus icon">New Task</button>
+            <button class="create-btn" id="createNewProjectBtn"><img class="med-icon" src="ae55e33b8c0bcb7e6401.svg" alt="plus icon">New Project</button>
+        </div>
+    </div>
+    <dialog id="taskModal">
+        <form action="" method="" id="taskForm">
+            <div class="modal-container">
+                <div class="modal-header-container">
+                    <h4 data-element="taskHeader">Create New Task</h4>
+                    <img class="lg-icon close-icon" src="cc409ef291471b162942.svg" alt="close x icon" data-action="closeModal">
+                </div>
+                <div class="task-top-container">
+                    <input class="title-input" type="text" name="taskTitle" placeholder="Task" data-value="taskTitle" required autofocus>
+                    <textarea class="task-d" name="taskDescrip" placeholder="Notes" data-value="taskDescription"></textarea>
+                </div>
+                <div class="task-bottom-container">
+                    <input class="date-picker" type="date" name="taskDueDate" data-value="taskDueDate">
+                    <div class="input-row-container">
+                        <div class="icon-label-container">
+                            <img class="med-icon" src="44a94e692d69dabd58bd.svg" alt="arrow up icon">
+                            <label for="taskPriority">Priority</label>
+                        </div>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="input-row-container width-100">
+                        <div class="icon-label-container">
+                            <img class="med-icon" src="7820d2dc43180c73102c.svg" alt="folder icon">
+                            <label for="projectSelect">Project</label>
+                        </div>
+                        <select class="project-select width-100" id="projectSelect">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer-container right-align" data-element="footer">
+                    <button class="primary-btn" type="submit" data-action="submitBtn">Create Task</button>
+                </div>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="projectModal">
+        <form action="" method="" id="projectForm">
+            <div class="modal-container">
+                <div class="modal-header-container">
+                    <h4 data-element="projectHeader">Create New Project</h4>
+                    <img class="lg-icon close-icon" src="cc409ef291471b162942.svg" alt="close x icon" data-action="closeModal">
+                </div>
+                <div class="task-top-container">
+                    <input class="title-input" type="text" name="projectTitle" placeholder="Project name" data-value="projectTitle" required autofocus>
+                </div>
+                <div class="modal-footer-container right-align" data-element="footer">
+                    <button class="primary-btn" type="submit" data-action="submitBtn">Create Project</button>
+                </div>
+            </div>
+        </form>
+    </dialog>
+</body>
+</html>
