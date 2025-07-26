@@ -80,7 +80,6 @@ function submitTask(event){
         editTask(currentTaskEdit, taskTitle, description, dueDate, priority);
         if(currentProjectID != projectID){
             moveTask(currentTaskEdit, projectID);
-            sortTasksByDate(currentProjectEdit);
             rerenderTasks(currentProjectID, findProjectTasksContainer(currentProjectID));
             sortTasksByDate(allProjects[findProjectIndex(projectID)]);
             rerenderTasks(projectID, findProjectTasksContainer(projectID));
@@ -238,9 +237,4 @@ function findProjectTasksContainer(projectID){
     return taskContainer;
 }
 
-
-
-createNewProject("Example Project");
-createNewTask("This is a example task - click me to view or edit task", "In here you can edit or view contents. To delete this task click the trash icon in the bottom-left of this modal. To edit or delete projects, click the icon to the left of the project name.", "2025-01-01", "low", allProjects[1].id);
-createNewTask("This is where your tasks go by default", "Tasklist is your default project if you don't choose a custom project.", "2025-01-01", "low", "default");
 renderUI();

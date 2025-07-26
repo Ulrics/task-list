@@ -7,14 +7,8 @@ class Task{
         this.descript = description;
         this.priority = priority;
         this.projectID = projectID;
+        this.dueDate = dueDate;
 
-        if(dueDate != ""){
-            this.dueDate = parse(dueDate, "yyyy-MM-dd", new Date());
-        }
-        else{
-            this.dueDate = null;
-        }
-        
         this.isCompleted = false;
         this.id = crypto.randomUUID();
     }
@@ -23,7 +17,8 @@ class Task{
     }
     getFormattedDate(){
         if(this.dueDate != "" && this.dueDate != null){
-            return format(this.dueDate, "MMM dd, yy");
+            const dateHolder = parse(this.dueDate, "yyyy-MM-dd", new Date());
+            return format(dateHolder, "MMM dd, yy");
         }
         return "No Due Date";
     }
@@ -31,6 +26,7 @@ class Task{
         if(!this.dueDate){
             return "";
         }
-        return format(this.dueDate, "yyyy-MM-dd");
-    }
+        const dateHolder = parse(this.dueDate, "yyyy-MM-dd", new Date());
+        return format(dateHolder, "yyyy-MM-dd");
+    } 
 };

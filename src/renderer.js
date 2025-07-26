@@ -4,7 +4,6 @@ import { allProjects, findProjectIndex } from "./interface.js"
 import { startEditTaskModal, startEditProjectModal } from "./index.js";
 import editIconSvg from "./assets/square-pen.svg";
 
-
 const mainContainer = document.querySelector(".main-container");
 
 function renderUI(){
