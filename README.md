@@ -1,5 +1,6 @@
 # task-list
 No framework - vanilla javascript to-do list webapp
+### UI 
 ![Image of tasklist project UI](<./src/assets/tasklist-UI.png>)
 
 ### Features
